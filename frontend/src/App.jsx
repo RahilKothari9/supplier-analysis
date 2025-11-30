@@ -39,12 +39,12 @@ function App() {
             
           </div>
 
-          {/* Hero Content - Vertically Centered */}
-          <div className="flex-1 flex items-center justify-center px-6 md:px-12">
-            <div className="w-full max-w-4xl mx-auto text-center space-y-8 md:space-y-12">
+          {/* Hero Content - Positioned slightly above center */}
+          <div className="flex-1 flex items-center justify-center px-6 md:px-12 pb-16 md:pb-24">
+            <div className="w-full max-w-4xl mx-auto text-center space-y-6 md:space-y-10">
               {/* Main Title */}
-              <div className="space-y-4 md:space-y-6">
-                <h1 className="font-serif font-bold uppercase tracking-tight text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.85]">
+              <div className="space-y-2 md:space-y-6">
+                <h1 className="font-serif font-bold uppercase tracking-tight text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.85]">
                   Supplier
                   <br />
                   <span className="text-ledger-red">Stability</span>
