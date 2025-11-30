@@ -8,17 +8,10 @@ import os
 app = FastAPI()
 
 # Enable CORS for React
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    os.getenv("FRONTEND_URL", ""),  # Set this in Render environment variables
-]
-# Filter out empty strings
-origins = [o for o in origins if o]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins if origins else ["*"],
+    allow_origins=["*"],  # Allow all origins for development/demo
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
