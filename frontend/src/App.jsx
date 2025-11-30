@@ -3,6 +3,8 @@ import axios from 'axios';
 import SearchBar from './components/SearchBar';
 import Dashboard from './components/Dashboard';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ function App() {
     setData(null);
     
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/analyze/${ticker}`);
+      const response = await axios.get(`${API_URL}/api/analyze/${ticker}`);
       setData(response.data);
     } catch (err) {
       setError("Failed to fetch data. Ensure Backend is running and Ticker is valid.");
@@ -34,7 +36,7 @@ function App() {
           {/* Top Bar */}
           <div className="w-full px-6 md:px-12 py-6 flex items-center justify-between">
             <span className="font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-ledger-red font-semibold">
-              Indian Market Intelligence Unit
+              Indian Supplier Intelligence Unit
             </span>
             
           </div>
@@ -69,7 +71,7 @@ function App() {
           {/* Footer */}
           <div className="w-full px-6 md:px-12 py-6 text-center">
             <p className="font-mono text-[10px] md:text-xs text-ledger-ink/40 uppercase tracking-wider">
-              Bombay Ledger Theme — Built for procurement teams
+              Built for procurement teams
             </p>
           </div>
         </div>
@@ -124,7 +126,7 @@ function App() {
           {/* Footer */}
           <footer className="w-full py-4 border-t border-ledger-ink/20 text-center">
             <p className="font-mono text-[10px] text-ledger-ink/40 uppercase tracking-wider">
-              Bombay Ledger Theme — Built for procurement teams
+              Built for procurement teams
             </p>
           </footer>
         </div>

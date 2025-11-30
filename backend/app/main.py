@@ -3,13 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 import pandas as pd
 import numpy as np
+import os
 
 app = FastAPI()
 
 # Enable CORS for React
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    os.getenv("FRONTEND_URL", ""),  # Set this in Render environment variables
+]
+# Filter out empty strings
+origins = [o for o in origins if o]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins if origins else ["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
