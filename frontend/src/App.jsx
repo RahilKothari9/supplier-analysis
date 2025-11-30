@@ -14,7 +14,6 @@ function App() {
     setData(null);
     
     try {
-      // Assuming backend is on port 8000
       const response = await axios.get(`http://127.0.0.1:8000/api/analyze/${ticker}`);
       setData(response.data);
     } catch (err) {
@@ -25,56 +24,111 @@ function App() {
     }
   };
 
+  const showHero = !data && !loading && !error;
+
   return (
-    <div className="min-h-screen w-full bg-ledger-bg text-ledger-ink">
-      <main className="max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-12 space-y-10">
-        {/* HERO */}
-        <section className="border-3 border-ledger-ink bg-ledger-paper shadow-hard p-6 md:p-8 flex flex-col gap-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-ledger-red">
-                Indian Market Intelligence Unit
-              </p>
-              <h1 className="font-serif text-4xl md:text-5xl font-bold uppercase tracking-tight">
-                Supplier Stability
-              </h1>
-              <p className="font-mono text-sm text-ledger-ink/80 mt-2">
-                Real-time solvency, liquidity, and operational truth for Indian suppliers.
+    <div className="h-100 w-full bg-ledger-bg text-ledger-ink">
+      {showHero ? (
+        /* ========== HERO STATE - Full Screen Landing ========== */
+        <div className="h-screen flex flex-col">
+          {/* Top Bar */}
+          <div className="w-full px-6 md:px-12 py-6 flex items-center justify-between">
+            <span className="font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-ledger-red font-semibold">
+              Indian Market Intelligence Unit
+            </span>
+            
+          </div>
+
+          {/* Hero Content - Vertically Centered */}
+          <div className="flex-1 flex items-center justify-center px-6 md:px-12">
+            <div className="w-full max-w-4xl mx-auto text-center space-y-8 md:space-y-12">
+              {/* Main Title */}
+              <div className="space-y-4 md:space-y-6">
+                <h1 className="font-serif font-bold uppercase tracking-tight text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.85]">
+                  Supplier
+                  <br />
+                  <span className="text-ledger-red">Stability</span>
+                </h1>
+                <p className="font-mono text-base md:text-lg lg:text-xl text-ledger-ink/70 max-w-2xl mx-auto leading-relaxed">
+                  Real-time solvency, liquidity, and operational truth for Indian suppliers.
+                </p>
+              </div>
+
+              {/* Search Bar */}
+              <div className="w-full max-w-2xl mx-auto">
+                <SearchBar onSelect={fetchAnalysis} compact={false} />
+              </div>
+
+              {/* Helper Text */}
+              <p className="font-mono text-xs md:text-sm text-ledger-ink/40 uppercase tracking-wider">
+                Search 2000+ NSE-listed companies • Real-time financial analysis
               </p>
             </div>
-            <div className="text-right">
-              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase bg-ledger-ink text-ledger-bg px-3 py-1 border-3 border-ledger-ink shadow-hard">
-                <span className="w-2 h-2 bg-ledger-red inline-block" />
-                Bombay Ledger v1.0.0
-              </span>
+          </div>
+
+          {/* Footer */}
+          <div className="w-full px-6 md:px-12 py-6 text-center">
+            <p className="font-mono text-[10px] md:text-xs text-ledger-ink/40 uppercase tracking-wider">
+              Bombay Ledger Theme — Built for procurement teams
+            </p>
+          </div>
+        </div>
+      ) : (
+        /* ========== RESULTS STATE - Compact Header + Content ========== */
+        <div className="min-h-screen flex flex-col">
+          {/* Compact Header */}
+          <header className="w-full border-b-3 border-ledger-ink bg-ledger-paper">
+            <div className="max-w-6xl mx-auto px-4 md:px-8 py-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex items-center gap-4 shrink-0">
+                  <h1 className="font-serif font-bold uppercase tracking-tight text-xl md:text-2xl">
+                    Supplier <span className="text-ledger-red">Stability</span>
+                  </h1>
+                  <span className="hidden md:inline-flex items-center gap-1.5 font-mono text-[9px] uppercase bg-ledger-ink text-ledger-bg px-2 py-1">
+                    <span className="w-1.5 h-1.5 bg-ledger-red inline-block" />
+                    v1.0.0
+                  </span>
+                </div>
+                <div className="flex-1 max-w-lg">
+                  <SearchBar onSelect={fetchAnalysis} compact={true} />
+                </div>
+              </div>
             </div>
-          </div>
+          </header>
 
-          {/* SEARCH */}
-          <SearchBar onSelect={fetchAnalysis} />
-        </section>
+          {/* Main Content */}
+          <main className="flex-1 py-6 md:py-10">
+            <div className="max-w-6xl mx-auto px-4 md:px-8">
+              {/* Loading State */}
+              {loading && (
+                <div className="flex flex-col items-center justify-center py-32 space-y-4">
+                  <div className="w-16 h-16 border-4 border-ledger-ink border-t-ledger-red rounded-full animate-spin" />
+                  <p className="font-mono text-lg uppercase tracking-wider animate-pulse">
+                    Retrieving ledger entries...
+                  </p>
+                </div>
+              )}
 
-        {/* STATES */}
-        {loading && (
-          <div className="font-mono text-lg animate-pulse text-center">
-            Retrieving ledger entries...
-          </div>
-        )}
+              {/* Error State */}
+              {error && (
+                <div className="max-w-xl mx-auto p-6 border-3 border-ledger-red bg-red-50 shadow-hard">
+                  <p className="font-mono text-ledger-red font-bold text-center">{error}</p>
+                </div>
+              )}
 
-        {error && (
-          <div className="p-4 border-3 border-ledger-red bg-red-100 text-ledger-red font-bold font-mono">
-            {error}
-          </div>
-        )}
+              {/* Dashboard */}
+              <Dashboard data={data} />
+            </div>
+          </main>
 
-        {/* DASHBOARD */}
-        <Dashboard data={data} />
-      </main>
-
-      {/* FOOTER */}
-      <footer className="w-full py-6 text-center text-xs font-mono text-ledger-ink/60">
-        Bombay Ledger Theme — Built for procurement teams
-      </footer>
+          {/* Footer */}
+          <footer className="w-full py-4 border-t border-ledger-ink/20 text-center">
+            <p className="font-mono text-[10px] text-ledger-ink/40 uppercase tracking-wider">
+              Bombay Ledger Theme — Built for procurement teams
+            </p>
+          </footer>
+        </div>
+      )}
     </div>
   );
 }
