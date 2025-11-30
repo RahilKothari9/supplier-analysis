@@ -10,6 +10,8 @@ const SearchBar = ({ onSelect, compact = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const wrapperRef = useRef(null);
+  const inputRef = useRef(null);
+  const skipBlurRef = useRef(false);
 
   useEffect(() => {
     axios.get('/companies.json')
@@ -34,14 +36,28 @@ const SearchBar = ({ onSelect, compact = false }) => {
     limit: 8
   });
 
-  const handleSearch = (e) => {
-    const val = e.target.value;
+  const performSearch = (val) => {
     setQuery(val);
     setIsOpen(true);
-    if (val.length > 1) {
-      setResults(fuse.search(val).map(result => result.item));
+    if (val.length > 1 && companies.length > 0) {
+      const searchResults = fuse.search(val).map(result => result.item);
+      setResults(searchResults);
     } else {
       setResults([]);
+    }
+  };
+
+  const handleSearch = (e) => {
+    performSearch(e.target.value);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    if (companies.length > 0) {
+      const searchResults = fuse.search(suggestion).map(result => result.item);
+      if (searchResults.length > 0) {
+        // Directly select the top result
+        handleSelect(searchResults[0]);
+      }
     }
   };
 
@@ -98,11 +114,16 @@ const SearchBar = ({ onSelect, compact = false }) => {
           strokeWidth={2.5} 
         />
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={handleSearch}
           onFocus={() => { setIsFocused(true); setIsOpen(true); }}
-          onBlur={() => setIsFocused(false)}
+          onBlur={() => {
+            if (!skipBlurRef.current) {
+              setIsFocused(false);
+            }
+          }}
           placeholder="Search NSE company or symbol..."
           className="w-full bg-transparent pl-14 md:pl-16 pr-6 py-5 md:py-6 text-lg md:text-xl font-bold uppercase placeholder:text-ledger-ink/30 placeholder:font-medium focus:outline-none tracking-wide"
         />
@@ -155,7 +176,10 @@ const SearchBar = ({ onSelect, compact = false }) => {
           {['Tata Steel', 'Reliance', 'Infosys', 'HDFC Bank'].map((suggestion) => (
             <button
               key={suggestion}
-              onClick={() => { setQuery(suggestion); handleSearch({ target: { value: suggestion } }); }}
+              onMouseDown={(e) => {
+                e.preventDefault(); // Prevents input blur
+                handleSuggestionClick(suggestion);
+              }}
               className="w-full text-left px-6 py-3 hover:bg-ledger-ink hover:text-ledger-bg border-b border-ledger-ink/10 last:border-b-0 transition-colors uppercase text-sm font-medium"
             >
               {suggestion}
